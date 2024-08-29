@@ -61,8 +61,8 @@ if uploaded_file is not None:
     # Perform prediction
     try:
         pred = model.predict(new_image)
-        pred_gender = gender_dict[round(pred[0][0])]
-        pred_age = round(pred[1][0])
+        pred_gender = gender_dict[round(float(pred[0][0]))]
+        pred_age = round(float(pred[1][0]))
 
         # Display results
         st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
@@ -76,3 +76,4 @@ if uploaded_file is not None:
         st.pyplot(fig)
     except Exception as e:
         st.error(f"Error during prediction: {e}")
+
