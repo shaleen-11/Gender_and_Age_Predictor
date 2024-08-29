@@ -14,7 +14,7 @@ custom_objects = {
 @st.cache_resource(show_spinner=False)
 def load_model():
     try:
-        model = tf.keras.models.load_model('model.h5')
+        model = tf.keras.models.load_model('model.h5', custom_objects=custom_objects)
         return model
     except Exception as e:
         st.error(f"Error loading model: {e}")
