@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import tensorflow as tf
@@ -7,7 +6,7 @@ from keras.preprocessing.image import load_img, img_to_array
 # Load the trained model (make sure to have the model file in the same directory or provide the correct path)
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model('model_gender_age.h5')  # Replace with the actual model file name
+    model = tf.keras.models.load_model('model.h5')  # Correct model file name
     return model
 
 model = load_model()
@@ -22,7 +21,7 @@ if uploaded_file is not None:
     # Load and preprocess the image
     image = load_img(uploaded_file, target_size=(200, 200))  # Adjust target size as per your model input
     image = img_to_array(image)
-    image = np.expand_dims(image, axis=0)
+    image = np.expand_dims(image, axis=0) / 255.0  # Normalize the image if required
 
     # Perform prediction
     prediction = model.predict(image)
