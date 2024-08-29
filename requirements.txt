@@ -1,6 +1,5 @@
 streamlit
 numpy
-tensorflow
-keras
+tensorflow==2.13.0  # Adjust the version as needed
 Pillow
 matplotlib
