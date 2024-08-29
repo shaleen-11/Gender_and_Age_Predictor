@@ -6,8 +6,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import os
 
-# Define the gender dictionary
-gender_dict = {0: 'Female', 1: 'Male'}
+# Define the gender dictionary with reversed values
+gender_dict = {0: 'Male', 1: 'Female'}
 
 # Define or import custom objects if needed
 def mae(y_true, y_pred):
@@ -61,7 +61,7 @@ if uploaded_file is not None:
     # Perform prediction
     try:
         pred = model.predict(new_image)
-        pred_gender = gender_dict[round(float(pred[0][0]))]
+        pred_gender = gender_dict[round(float(pred[0][0]))]  # Use updated gender_dict
         pred_age = round(float(pred[1][0]))
 
         # Display results
