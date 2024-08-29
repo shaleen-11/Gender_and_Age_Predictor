@@ -3,7 +3,11 @@ import numpy as np
 import tensorflow as tf
 from keras.preprocessing.image import load_img, img_to_array
 from PIL import Image
+import matplotlib.pyplot as plt
 import os
+
+# Define the gender dictionary
+gender_dict = {0: 'Female', 1: 'Male'}
 
 # Define or import custom objects if needed
 def mae(y_true, y_pred):
@@ -37,28 +41,38 @@ if model is None:
 st.title("Gender and Age Predictor")
 st.write("Upload an image to predict the gender and age.")
 
+# Function to preprocess a single image
+def preprocess_image(image_path, target_size=(128, 128)):
+    # Load and preprocess the image
+    img = load_img(image_path, color_mode='grayscale')
+    img = img.resize(target_size, Image.ANTIALIAS)
+    img = np.array(img)
+    img = img / 255.0  # Normalize if necessary
+    img = img.reshape(1, target_size[0], target_size[1], 1)  # Reshape for model input
+    return img
+
 # Image uploader
 uploaded_file = st.file_uploader("Choose a face image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Load and preprocess the image
-    image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
-    image = image.resize((128, 128))  # Resize to 128x128
-    image = img_to_array(image)
-    image = np.expand_dims(image, axis=0)  # Add batch dimension
-    image = image / 255.0  # Normalize the image
-
+    # Preprocess the uploaded image
+    new_image = preprocess_image(uploaded_file)
+    
     # Perform prediction
     try:
-        prediction = model.predict(image)
-        
-        # Assuming the model has two outputs, one for gender and one for age
-        gender_pred = "Male" if prediction[0][0] > 0.5 else "Female"
-        age_pred = int(prediction[1][0])
+        pred = model.predict(new_image)
+        pred_gender = gender_dict[round(pred[0][0])]
+        pred_age = round(pred[1][0])
 
         # Display results
         st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
-        st.write(f"Predicted Gender: {gender_pred}")
-        st.write(f"Predicted Age: {age_pred} years")
+        st.write(f"Predicted Gender: {pred_gender}")
+        st.write(f"Predicted Age: {pred_age} years")
+
+        # Optionally, display the image
+        fig, ax = plt.subplots()
+        ax.axis('off')
+        ax.imshow(new_image.reshape(128, 128), cmap='gray')
+        st.pyplot(fig)
     except Exception as e:
         st.error(f"Error during prediction: {e}")
