@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from keras.preprocessing.image import load_img, img_to_array
+import os
 
 # Define or import custom objects
 def mae(y_true, y_pred):
@@ -11,13 +12,20 @@ custom_objects = {
     'mae': mae
 }
 
+# Define the path to your model file
+model_path = 'model.h5'
+
 @st.cache_resource(show_spinner=False)
 def load_model():
-    try:
-        model = tf.keras.models.load_model('model.h5', custom_objects=custom_objects)
-        return model
-    except Exception as e:
-        st.error(f"Error loading model: {e}")
+    if os.path.exists(model_path):
+        try:
+            model = tf.keras.models.load_model(model_path, custom_objects=custom_objects)
+            return model
+        except Exception as e:
+            st.error(f"Error loading model: {e}")
+            return None
+    else:
+        st.error(f"Model file not found at: {model_path}")
         return None
 
 model = load_model()
