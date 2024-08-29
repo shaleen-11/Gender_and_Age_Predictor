@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
-from keras.preprocessing.image import load_img, img_to_array
+from keras.preprocessing.image import load_img
 from PIL import Image
 import matplotlib.pyplot as plt
 import os
@@ -45,7 +45,7 @@ st.write("Upload an image to predict the gender and age.")
 def preprocess_image(image_path, target_size=(128, 128)):
     # Load and preprocess the image
     img = load_img(image_path, color_mode='grayscale')
-    img = img.resize(target_size, Image.ANTIALIAS)
+    img = img.resize(target_size, Image.Resampling.LANCZOS)  # Updated to use LANCZOS
     img = np.array(img)
     img = img / 255.0  # Normalize if necessary
     img = img.reshape(1, target_size[0], target_size[1], 1)  # Reshape for model input
