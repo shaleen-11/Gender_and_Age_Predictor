@@ -3,13 +3,19 @@ import numpy as np
 import tensorflow as tf
 from keras.preprocessing.image import load_img, img_to_array
 
-# Load the trained model (make sure to have the model file in the same directory or provide the correct path)
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_model():
-    model = tf.keras.models.load_model('model.h5')  # Correct model file name
-    return model
+    try:
+        model = tf.keras.models.load_model('model.h5')  # Correct model file name
+        return model
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        return None
 
 model = load_model()
+
+if model is None:
+    st.stop()
 
 st.title("Gender and Age Predictor")
 st.write("Upload an image to predict the gender and age.")
