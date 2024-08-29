@@ -3,10 +3,18 @@ import numpy as np
 import tensorflow as tf
 from keras.preprocessing.image import load_img, img_to_array
 
+# Define or import custom objects
+def mae(y_true, y_pred):
+    return tf.reduce_mean(tf.abs(y_true - y_pred))
+
+custom_objects = {
+    'mae': mae
+}
+
 @st.cache_resource(show_spinner=False)
 def load_model():
     try:
-        model = tf.keras.models.load_model('model.h5')  # Correct model file name
+        model = tf.keras.models.load_model('model.h5', custom_objects=custom_objects)
         return model
     except Exception as e:
         st.error(f"Error loading model: {e}")
